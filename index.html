@@ -1,0 +1,165 @@
+<!doctype html>
+<html lang="en">
+  <head>
+	<meta name="generator" content="Hugo 0.165.0">
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Autoscroll</title>
+    
+    <meta name="description" content="CLI app for autoscroll" />
+     
+    <meta name="github-repo" content="https://github.com/alwaldend/src" />
+      
+    <link rel="stylesheet" href="/scss/landing.min.757a78e91e368eeac2f0cb4833153359a2f027c8e1ec3cf51681f3f623b018da.css" />
+     
+  </head>
+  <body>
+    <header class="landing-topbar">
+      <a class="landing-brand" href="/">Autoscroll</a>
+      <nav class="landing-nav" aria-label="Project links">
+        
+        <a href="https://alwaldend.com/docs/projects/autoscroll/">Docs</a>
+        
+        <a href="https://github.com/alwaldend/src">Github</a>
+        
+      </nav>
+    </header>
+    <main class="landing-container">
+      <div class="landing-header">
+        <h1>Autoscroll</h1>
+        <div class="btn-group" role="group" aria-label="Project links">
+          
+          <a class="btn btn-outline-primary" href="https://alwaldend.com/docs/projects/autoscroll/">Docs</a>
+          
+          <a class="btn btn-outline-primary" href="https://github.com/alwaldend/src">Github</a>
+          
+        </div>
+      </div>
+      
+      <p class="landing-description">CLI app for autoscroll</p>
+       
+      <p class="landing-meta">Built with py.</p>
+      
+      <div class="landing-readme"><h2 id="links">Links</h2>
+<ul>
+<li>Source code: <a
+  href="https://github.com/alwaldend/src/tree/master/projects/autoscroll"
+  
+  >https://github.com/alwaldend/src/tree/master/projects/autoscroll</a
+>
+</li>
+</ul>
+<h2 id="features">Features</h2>
+<ul>
+<li>Platfrom-independent autoscroll</li>
+<li>Config file with hot-reload</li>
+<li>Some argparse tinkering</li>
+<li>Python3, PyQt6</li>
+</ul>
+<h2 id="usage">Usage</h2>
+<p>By default, the icon is disabled, to enable it pass <code>--icon-enable</code></p>
+<p>You can pass file contents as command line arguments using <code>@path/to/the/file</code> syntax.
+Arguments in that case can be placed wherever - on one line, on several lines</p>
+<p>If you want to dynamically pass runtime arguments (without restarting the process), you can use <code>--config</code> options for it</p>
+<p>Once you press <code>--buttons-start</code>, you can scroll vertically or horizontally just by moving your mouse untill you press <code>--buttons-end</code></p>
+<p>If <code>--buttons-hold</code> is set, the srolling ends once you release <code>--buttons-start</code></p>
+<p>Once <code>--buttons-start</code> is pressed, the scroll thread starts looping
+Every loop consists of sleeping for an interval, then scrolling for either 0, 1, or -1 pixels on both axis towards the starting point
+Starting point is the point where <code>--buttons-start</code> was pressed
+Sleep interval is recalculated on every mouse move as such:</p>
+<pre tabindex="0"><code>    100 / (--scrolling-acceleration * max(distance) + --scrolling-speed)
+</code></pre><p>If <code>--scrolling-acceleration</code> is not 0, the speed of scrolling will be faster
+the farther away you are from the starting point
+If <code>--scrolling-acceleration</code> is 0, the speed of scrolling will be constant</p>
+<h3 id="examples">Examples</h3>
+<h4 id="use-the-package">Use the package</h4>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>python3 -m venv venv
+</span></span><span style="display:flex;"><span>. venv/bin/activate
+</span></span><span style="display:flex;"><span>pip install autoscroll
+</span></span><span style="display:flex;"><span>autoscroll
+</span></span></code></pre></div><h4 id="command-line-options">Command line options</h4>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>autoscroll --buttons-start <span style="color:#ae81ff">1</span> --debug-click --icon-disable
+</span></span></code></pre></div><h4 id="pass-a-configuration-file-once">Pass a configuration file once</h4>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>autoscroll --icon-enable @config.txt
+</span></span></code></pre></div><p>If <code>config.txt</code> is defined like this, its contents will be used as command line arguments - they will be loaded only once
+Arguments can be placed wherever - on one line, on several lines
+For example,</p>
+<pre tabindex="0"><code>--buttons-start 1
+--buttons-hold --debug-click
+</code></pre><h4 id="listen-for-changes-in-the-configuration-file">Listen for changes in the configuration file</h4>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>autoscroll --config-enable --config-path config.txt
+</span></span></code></pre></div><p>If config.txt is defined like this, the process will listen for changes in that
+file and update itself
+Arguments can be placed wherever - on one line, on several lines
+The file is checked for changess every <code>--config-interval</code>
+For example:</p>
+<pre tabindex="0"><code>--buttons-start 1 --buttons-hold
+--debug_click
+</code></pre><h3 id="--help-output"><code>--help</code> output</h3>
+<pre tabindex="0"><code>usage: autoscroll [-h] [-ss SCROLLING_SPEED] [-sd SCROLLING_DEAD_AREA]
+                  [-sa SCROLLING_ACCELERATION] [-bh] [-bs BUTTONS_START] [-be BUTTONS_END]
+                  [-ce] [-cp CONFIG_PATH] [-ci CONFIG_INTERVAL] [-ie] [-ip ICON_PATH]
+                  [-is ICON_SIZE] [-df] [-dc] [-ds] [-di]
+
+...
+
+options:
+  -h, --help            show this help message and exit
+
+scrolling:
+
+  -ss, --scrolling-speed int
+                        constant part of the scrolling speed
+                        [default: 300]
+  -sd, --scrolling-dead-area int
+                        size of the square area aroung the starting point where scrolling will stop, in
+                        pixels
+                        [default: 50]
+  -sa, --scrolling-acceleration int
+                        dynamic part of the scrolling speed, depends on the distance from the point
+                        where the scrolling started, can be set to 0
+                        [default: 10]
+
+buttons:
+
+  -bh, --buttons-hold   if set, the scrolling will end once you release --buttons-start
+  -bs, --buttons-start int
+                        button that starts the scrolling
+                        [default: 2]
+  -be, --buttons-end int
+                        button that ends the scrolling
+                        [default: --buttons-start]
+
+config:
+
+  -ce, --config-enable  if set, arguments from the configuration file on --config-path will be loaded
+                        every --config-interval
+  -cp, --config-path str
+                        path to the configuration file
+                        [default: ~/.config/autoscroll/config.txt]
+  -ci, --config-interval int
+                        how often the config file should be checked for changes, in seconds
+                        [default: 5]
+
+icon:
+
+  -ie, --icon-enable    if set, the icon will be enabled
+  -ip, --icon-path str  path to the icon
+                        [default: resources/img/icon.svg]
+  -is, --icon-size int  size of the icon, in pixels
+                        [default: 30]
+
+debug:
+
+  -df, --debug-file     if set, every time the config file is parsed, information will be printed to
+                        stdout
+  -dc, --debug-click    if set, click info will be printed to stdout
+  -ds, --debug-scroll   if set, scroll info will be printed to stdout
+  -di, --debug-initial  if set, startup configuration will be printed to stdout
+</code></pre></div>
+    </main>
+    <footer class="landing-footer">
+      <p>Generated from the project README.</p>
+    </footer>
+  </body>
+</html>
